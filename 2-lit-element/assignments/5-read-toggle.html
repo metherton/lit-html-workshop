@@ -27,12 +27,76 @@
        *  <button @click=${this.someCallback}></button>
        *
        */
+
+      // your styles are defined in a static styles property
+      static get styles() {
+        return css`
+      :host {
+        display: block;
+      }
+    `;
+      }
+
+      static get properties() {
+        return {
+          articles: {type: Array},
+        };
+      }
+
+      constructor() {
+        super();
+
+        // default value is no longer set in the static properties definition, but in the constructor
+        this.articles = [];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        fetch('https://newsapi.org/v2/everything?q=<some-topic>&apiKey=ba37ba01809d4503b27900f0eb408bf9')
+        // the response is a stream, we need to parse it as json first
+                .then(response => response.json())
+                .then(response => {
+                  // we now have the API response available as an object
+                  this.articles = response.articles;
+                });
+      }
+
+      render() {
+        return html`
+      <ul>
+        ${this.articles.map(article => html`
+          <!-- use your new element -->
+                <my-article
+                .title=${article.title}
+                .description=${article.description}>
+                </my-article>`)}
+      </ul>
+    `;
+      }
     }
 
     customElements.define('my-element', MyElement);
+
+    class MyArticle extends LitElement {
+      static get properties() {
+        return {
+          title: { type: String },
+          description: {type: String},
+        };
+      }
+
+      render() {
+        return html`<li>${this.title}</li>`;
+      }
+
+    }
+
+    customElements.define('my-article', MyArticle);
+
   </script>
 </head>
 
 <body>
+  <my-element></my-element>
 </body>
 </html>
