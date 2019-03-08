@@ -57,7 +57,7 @@
                 .then(response => response.json())
                 .then(response => {
                   // we now have the API response available as an object
-                  this.articles = response.articles;
+                  this.articles = response.articles.map((article, i) => ({...article, id: i, read: false}));
                 });
       }
 
@@ -68,7 +68,8 @@
           <!-- use your new element -->
                 <my-article
                 .title=${article.title}
-                .description=${article.description}>
+                .description=${article.description}
+                .read=${article.read}>
                 </my-article>`)}
       </ul>
     `;
@@ -82,11 +83,19 @@
         return {
           title: { type: String },
           description: {type: String},
+          read: {type: Boolean},
         };
       }
 
       render() {
-        return html`<li>${this.title}</li>`;
+        return html`<li>
+              <button @click=${this._toggleRead}>${this.read ? 'read' : 'unread'}</button>
+              <h2>${this.title}</h2>
+            </li>`;
+      }
+
+      _toggleRead() {
+        this.read = !this.read;
       }
 
     }
