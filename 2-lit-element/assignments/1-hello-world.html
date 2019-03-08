@@ -21,10 +21,53 @@
 
     // import LitElement from the unpkg CDN as a module, it makes this code work anywhere
     import { LitElement, html, css } from 'https://unpkg.com/lit-element@2.0.1?module';
+
+    class MyElement extends LitElement {
+      // your styles are defined in a static styles property
+      static get styles() {
+        return css`
+      :host {
+        display: block;
+      }
+    `;
+      }
+
+      static get properties() {
+        return {
+          message: { type: String }
+        };
+      }
+
+      constructor() {
+        super();
+
+        // default value is no longer set in the static properties definition, but in the constructor
+        this.message = 'World';
+      }
+
+      render() {
+        return html`
+      <p>Hello ${this.message}</p>
+
+      <button @click=${this._onButtonClicked}>
+        Click me!
+      </button>
+    `;
+      }
+
+      _onButtonClicked() {
+        console.log('button clicked!');
+      }
+    }
+
+    customElements.define('my-element', MyElement);
+
+
   </script>
 </head>
 
 <body>
 
+  <my-element></my-element>
 </body>
 </html>

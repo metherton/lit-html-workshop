@@ -40,7 +40,54 @@
      */
 
     class MyElement extends LitElement {
+      // your styles are defined in a static styles property
+      static get styles() {
+        return css`
+      :host {
+        display: block;
+      }
+    `;
+      }
 
+      static get properties() {
+        return {
+          message: { type: String },
+          firstArticleTitle: {type: String},
+        };
+      }
+
+      constructor() {
+        super();
+
+        // default value is no longer set in the static properties definition, but in the constructor
+        this.message = 'World';
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        fetch('https://newsapi.org/v2/everything?q=<some-topic>&apiKey=ba37ba01809d4503b27900f0eb408bf9')
+           // the response is a stream, we need to parse it as json first
+           .then(response => response.json())
+           .then(response => {
+               // we now have the API response available as an object
+               console.log(response.articles[0].title);
+               this.firstArticleTitle = response.articles[0].title;
+             });
+      }
+
+      render() {
+        return html`
+      <p>Hello ${this.message}</p>
+
+      <button @click=${this._onButtonClicked}>
+        Click me!
+      </button>
+    `;
+      }
+
+      _onButtonClicked() {
+        console.log('button clicked!');
+      }
     }
 
     customElements.define('my-element', MyElement);
@@ -48,5 +95,6 @@
 </head>
 
 <body>
+<my-element></my-element>
 </body>
 </html>
