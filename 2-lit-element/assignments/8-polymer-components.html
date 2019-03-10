@@ -70,8 +70,8 @@
 
         return html`
       <paper-button raised @click=${() => this.filter = 'all'}>all</paper-button>
-            <paper-button raised @click=${() => this.filter = 'read'}>read</paper-button>
-           <paper-button raised @click=${() => this.filter = 'unread'}>unread</paper-button>
+            <paper-button raised @click=${() => this.filter = 'read'}>read (${filteredArticles.length})</paper-button>
+           <paper-button raised @click=${() => this.filter = 'unread'}>unread (${filteredArticles.length})</paper-button>
 
 
       <ul>
